@@ -169,7 +169,7 @@ ep_config.h: ep_config.h.in
 
 install:
 	install -d $(DESTDIR)$(PREFIX)/sbin
-	install -m 644 $(EXECUTABLE) $(DESTDIR)$(PREFIX)/sbin
+	install -m 0755 $(EXECUTABLE) $(DESTDIR)$(PREFIX)/sbin
 
 clean:
 	rm -f *.o $(EXECUTABLE)
