@@ -2005,7 +2005,7 @@ static ep_stat_t w_form_call_str(char *cmd_str, size_t cmd_str_size,
                 , parsed_operation_t *parsed_operation)
  *  \brief Combine script name with substitution parameters from database
  *  \param[out] char *cmd_str // Combined string
- *  \param[in] size_t cmd_str_size // cmd_str buffer size 
+ *  \param[in] size_t cmd_str_size // cmd_str buffer size
  *  \param[in] parsed_backend_method_t *parsed_ubus_str // Contains arguments for backend command
  *  \param[in] sqlite3_stmt *stmt // Prepared statement for getting substitution values
  *  \param[in] int idx_subst_param // amount of substitution params
@@ -2484,7 +2484,7 @@ static ep_stat_t w_form_getall_subst_sql_select(worker_data_t *wd
     strcpy_safe(query, "SELECT ", query_size);
     for (j = 0; j < idx_params_num; j ++)
     {
-        if ( pn->indices[j].type == REQ_IDX_TYPE_EXACT || 
+        if ( pn->indices[j].type == REQ_IDX_TYPE_EXACT ||
              pn->indices[j].type == REQ_IDX_TYPE_RANGE)
         {
             sprintf(query+strlen(query), "t%d.[", j);
@@ -2494,7 +2494,7 @@ static ep_stat_t w_form_getall_subst_sql_select(worker_data_t *wd
     }
     for (j = 0; j < parsed_ubus_str->subst_val_num; j++)
     {
-        if ( pn->indices[j].type == REQ_IDX_TYPE_EXACT || 
+        if ( pn->indices[j].type == REQ_IDX_TYPE_EXACT ||
              pn->indices[j].type == REQ_IDX_TYPE_RANGE)
         {
             if (parsed_ubus_str->subst_val[j].mmx_subst_val.name_formatter ||
@@ -2568,12 +2568,12 @@ static ep_stat_t w_form_getall_subst_sql_select(worker_data_t *wd
             , parsed_ubus_str->subst_val[i].mmx_subst_val.leaf_name);
             if ((min_idx_num > 0) && (s_obj_num > 0))
             {
-                if(i > 0) 
+                if(i > 0)
                 {
                     // TODO:
                     DBG("not support inner join for base table now");
                 }
-                else 
+                else
                 {
                     strcat_safe(query, " FROM ", query_size);
                     strcat_safe(query, s_obj_info.objValuesTblName, query_size);
@@ -2581,14 +2581,14 @@ static ep_stat_t w_form_getall_subst_sql_select(worker_data_t *wd
                 }
             }
         }
-        else 
+        else
         {
-            if(i > 0) 
+            if(i > 0)
             {
                 // TODO:
                 DBG("not support inner join for base table now");
-            } 
-            else 
+            }
+            else
             {
                 strcat_safe(query, " FROM ", query_size);
                 strcat_safe(query, obj_info->objValuesTblName, query_size);
@@ -5798,10 +5798,10 @@ static ep_stat_t w_insert_multi_instance_root_object_to_answer(ep_message_t *ans
 
     if (*last_sign != '.')
         return EPS_IGNORED;
-    
+
     *p_ph_in_objname = '\0';
     status = w_insert_gpn_res_to_answer(&pn, answer, (const obj_info_t *)obj_info, NULL, 0, idx_num - 1, idx_values);
-    
+
     *p_ph_in_objname = INDEX_PLACEHOLDER[0];
 
     return status;
@@ -5814,7 +5814,7 @@ static ep_stat_t w_insert_multi_instance_root_object_to_answer(ep_message_t *ans
  *  values, just send subobject name, like:
  *     Device.X_Inango_BbfSubIf.47.InlineFrameProcessing.IngressRule.
  *     Device.X_Inango_BbfSubIf.48.InlineFrameProcessing.IngressRule.
- * 
+ *
  *  Returns:
  *     EPS_OK - in case of success, error code - otherwise
  */
@@ -6071,7 +6071,7 @@ static ep_stat_t w_handle_getparamnames(worker_data_t *wd, ep_message_t *message
     if ((status = ep_db_get_tbl_row_count(wd->mdb_conn, count_query,
                                           &objects_count)) != EPS_OK)
         GOTO_RET_WITH_ERROR(status, "Couldn't get objects count (error %d)", status);
-        
+
     DBG("Objects %d", objects_count);
 
     /* Allocate memory for objects struct*/
@@ -6124,7 +6124,7 @@ static ep_stat_t w_handle_getparamnames(worker_data_t *wd, ep_message_t *message
                 previous_num_values = 0;
                 previous_num_idx = 0;
             }
-            
+
         }
     }
 
@@ -6345,7 +6345,7 @@ static ep_stat_t w_form_query_addobject_insert(worker_data_t *wd, ep_message_t *
 
     /* Values of parameters (not index) should be taken from request or their
      * defaults otherwise.
-     * For example, request from CWMP will contain NO object parameters, so we 
+     * For example, request from CWMP will contain NO object parameters, so we
      * have to use default values for this frontend
      */
     strcat_safe(query, ", ", query_size);
@@ -6355,7 +6355,7 @@ static ep_stat_t w_form_query_addobject_insert(worker_data_t *wd, ep_message_t *
         if (param_info[i].isIndex)
             continue;
 
-        
+
 
         param_value_was_found = FALSE;
         for (j = 0; j < message->body.addObject.arraySize; ++j)
@@ -6383,7 +6383,7 @@ static ep_stat_t w_form_query_addobject_insert(worker_data_t *wd, ep_message_t *
             {
                 strcat_safe(query, "NULL,", query_size);
             }
-            
+
         }
     }
     LAST_CHAR(query) = '\0'; /* remove last comma */
@@ -9613,7 +9613,7 @@ static ep_stat_t w_form_query_get_all_keys(worker_data_t *wd, obj_info_t *obj_in
                     strcat_safe(query, idx_params[j], query_size);
                     strcat_safe(query, "] AND ", query_size);
 
-                    if (pn->indices[j].exact_val.num) 
+                    if (pn->indices[j].exact_val.num)
                     {
                         strcat_safe(where, " AND ", sizeof(where));
                         sprintf(where+strlen(where), "t%d.[", i);
@@ -11077,7 +11077,7 @@ static ep_stat_t w_getall_obj_script(worker_data_t *wd, obj_info_t *obj_info,
     char *buf = wd->be_req_xml_buf;
     int bufSize = sizeof(wd->be_req_xml_buf);
     param_info_t param_info[MAX_PARAMS_PER_OBJECT];
-    int param_num; 
+    int param_num;
     int idx_params_num = 0;
     char *idx_params[MAX_INDECES_PER_OBJECT];
     int idx_values[MAX_INDECES_PER_OBJECT];
@@ -11552,7 +11552,7 @@ static ep_stat_t w_getall_sync_db_be_keys(worker_data_t *wd
                  , int *addStatus
                  , int *updStatus)
 {
-    ep_stat_t          status               = EPS_OK; 
+    ep_stat_t          status               = EPS_OK;
     int                cmp_res              = 0;
     int                dbrow_pos            = 0;
     int                berow_pos            = 0;
@@ -11768,7 +11768,7 @@ static ep_stat_t w_config_disc_tree(worker_data_t *wd
     getall_keys_t      dbkeys;
     getall_keys_t      bekeys;
     parsed_backend_method_t parsed_method_string;
-    
+
     memset(&dbkeys, 0, sizeof(getall_keys_t));
     memset(&bekeys, 0, sizeof(getall_keys_t));
 
