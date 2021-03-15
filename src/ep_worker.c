@@ -9751,6 +9751,7 @@ static ep_stat_t w_form_query_getall_insert_new(worker_data_t *wd, obj_info_t *o
     BOOL subst_other_obj = FALSE;
     BOOL is_first_element = FALSE;
     obj_info_t prevobj_info;
+    int backend_index = -1;
 
     memset(query, 0, query_size);
 
@@ -9823,6 +9824,12 @@ static ep_stat_t w_form_query_getall_insert_new(worker_data_t *wd, obj_info_t *o
     tmp_cnt = 0;
     for (i = 0; i < parsed_backend_str->subst_val_num; i++)
     {
+        if (strcmp(parsed_backend_str->subst_val[i].mmx_subst_val.leaf_name, idx_params[idx_params_num - 1]) == 0)
+        {
+            backend_index = i;
+            continue;
+        }
+
         if (parsed_backend_str->subst_val[i].mmx_subst_val.obj_name == NULL)
         {
             strcat_safe(query, "[", query_size);
@@ -9848,23 +9855,30 @@ static ep_stat_t w_form_query_getall_insert_new(worker_data_t *wd, obj_info_t *o
         strcat_safe(query, "], ", query_size);
     }
     /* The last index is calculated in the object's table. */
-    if (idx_params_num > 1)
-        strcat_safe(query, "IFNULL(MAX(t0.", query_size);
-    else
-        strcat_safe(query, "IFNULL(MAX(t1.", query_size);
+    if(backend_index != -1)
+    {
+        strcat_safe(query, "IFNULL('", query_size);
+        strcat_safe(query, newrow->be_keys[backend_index], query_size);
+        if (idx_params_num > 1)
+            strcat_safe(query, "', MAX(t0.", query_size);
+        else
+            strcat_safe(query, "', MAX(t1.", query_size);
 
     strcat_safe(query, "[", query_size);
     strcat_safe(query, idx_params[idx_params_num-1], query_size);
-    strcat_safe(query, "]),0)+1 ", query_size);
-
-    /* Add values of params that are the be-keys and belong to that object*/
-    for (i = 0; i < newrow->keys_num; i++)
+    strcat_safe(query, "])+1) ", query_size);
+    }
+    else
     {
-        if (parsed_backend_str->subst_val[i].mmx_subst_val.obj_name == NULL)
+        /* Add values of params that are the be-keys and belong to that object*/
+        for (i = 0; i < newrow->keys_num; i++)
         {
-            strcat_safe(query, ", '", query_size);
-            strcat_safe(query, newrow->be_keys[i], query_size);
-            strcat_safe(query, "'", query_size);
+            if (parsed_backend_str->subst_val[i].mmx_subst_val.obj_name == NULL)
+            {
+                strcat_safe(query, ", '", query_size);
+                strcat_safe(query, newrow->be_keys[i], query_size);
+                strcat_safe(query, "'", query_size);
+            }
         }
     }
 
